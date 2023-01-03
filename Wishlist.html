@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    #wishlist{
+        display: grid;
+        grid-template-columns: repeat(4,1fr);
+    }
+</style>
+<body>
+    <div id="wishlist">
+
+    </div>
+</body>
+<script>
+    function wish() {
+        let Product2 =JSON.parse(localStorage.getItem('Wishlist'))||[]
+        Product2.map((elem)=>{
+            let div3 =document.createElement('div');
+            title=document.createElement('p');
+            title.innerText=elem.Name;
+            title.style.fontSize='16px';
+            title.style.color='grey'
+            image=document.createElement('img');
+            image.style.width='80%'
+            image.src="https://rukminim1.flixcart.com/image/832/832/k5r2mq80/lingerie-set/6/y/v/free-bkn-600015-bk-muquam-original-imafzdhhqmehbweq.jpeg?q=70";
+            price =document.createElement('p');
+            price.innerText=elem.Price;
+            div3.append(image,title,price)
+            document.getElementById('wishlist').append(div3)
+        })
+    }
+    wish()
+</script>
+</html>

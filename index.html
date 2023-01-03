@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/b4906ba0c9.js" crossorigin="anonymous"></script>
+    <title>Document</title>
+</head>
+<style>
+    .top{
+      display: flex;
+      justify-content: space-around;
+    }
+    #Product{
+        display: grid;
+        grid-template-columns: repeat(4,1fr);
+    }
+
+
+</style>
+<body>
+    <div class="main">
+        <div class="top">
+       <select name="" id="category" onchange="Category()">
+        <option value="men">men</option>
+        <option value="women">women</option>
+        <option value="kids">kids</option>
+        <option value="homedecor">homedecor</option>
+       </select>
+       <select id="sort" onchange="Sort()">
+        <option value="high_to_low">High to low</option>
+        <option value="low_to_high">Low to high</option>
+       </select>
+    </div>
+    <div id="Product">
+
+    </div>
+    </div>
+</body>
+<script >
+    var arr1=[];
+    var sort='asc'
+    function getProduct() {
+       
+        fetch(`https://dbioz2ek0e.execute-api.ap-south-1.amazonaws.com/mockapi/get-products?limit=12&sort=price&order=${sort}`).then(res=>{
+            res=res.json();
+            return res;
+        }).then(res=>{
+            console.log(res.data);
+             arr1=[...arr1,...res.data]
+            console.log(arr1);
+            document.getElementById('Product').innerHTML=""
+            getall(arr1);
+            
+        })
+    }
+    console.log(arr1)
+    getProduct();
+    function getall(arr1) {
+        
+    
+    arr1.map((elem)=>{
+        
+        let div = document.createElement('div');
+        let img= document.createElement('img');
+        img.src="https://rukminim1.flixcart.com/image/832/832/k5r2mq80/lingerie-set/6/y/v/free-bkn-600015-bk-muquam-original-imafzdhhqmehbweq.jpeg?q=70";
+        img.style.width='80%'
+        let div2 = document.createElement('div');
+        div2.style.display='flex'
+        let title=document.createElement('p');
+        title.innerText=elem.title;
+        title.style.fontSize='16px';
+        title.style.color='grey'
+        
+        icon =document.createElement('span');
+        icon.className="fa-solid fa-heart";
+        icon.style.marginTop="25px";
+        icon.addEventListener("click",function(){
+            let store=JSON.parse(localStorage.getItem("Wishlist"))||[];
+            obj={
+                Image:elem.image,
+                Name:elem.title,
+                Price:elem.price,
+                Brand:elem.brand,
+                Category:elem.category
+            }
+            store.push(obj);
+            localStorage.setItem("Wishlist",JSON.stringify(store));
+            console.log(store);
+            
+        })
+        div2.append(title,icon);
+        div2.style.justifyContent='space-around'
+        let price =document.createElement('p');
+        price.innerText=`$ ${elem.price}`;
+        div.append(img,div2,price);
+        
+        document.getElementById('Product').append(div)
+    })
+
+
+    }
+    function Category() {
+        let arr2=[];
+        fetch(`https://dbioz2ek0e.execute-api.ap-south-1.amazonaws.com/mockapi/get-products`).then(res=>{
+            res=res.json();
+            return res;
+        }).then(res=>{
+            //console.log(res.data);
+             arr2=[...arr2,...res.data]
+            
+            var fil=document.getElementById('category').value;
+             var filt = arr2.filter(function(el){
+               return el.category==fil
+            //   console.log(filt,"kk")
+            
+       })
+       console.log(filt);
+       document.getElementById('Product').innerHTML='';
+           getall(filt);   
+        })
+            
+       
+            }
+
+            function Sort(){
+                if(document.getElementById('sort').value=='high_to_low'){
+                    sort='asc';
+                    document.getElementById('Product').innerHTML=''
+                    
+                }else{
+                    sort='desc'
+                    document.getElementById('Product').innerHTML=''
+                    getProduct();
+                }
+                
+            }
+    
+</script>
+</html>
